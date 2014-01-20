@@ -10,9 +10,35 @@
 
 @implementation AppDelegate
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	NSLog(@"remote Notification %@", [userInfo description]);
+	NSDictionary *apsInfo = [userInfo objectForKey:@"aps"];
+	
+	NSString *alert = [apsInfo objectForKey:@"alert"];
+	NSLog(@"Received Push Alert %@", alert);
+	
+	NSString *sound = [apsInfo objectForKey:@"sound"];
+	NSLog(@"Received Push Sound %@", sound);
+	
+	NSString *badge = [apsInfo objectForKey:@"badge"];
+	NSLog(@"Received Push Badge %@",badge);
+	application.applicationIconBadgeNumber = [[apsInfo objectForKey:@"badge"] integerValue];
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+	NSLog(@"APN : %@", [deviceToken description]);
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+	NSLog(@"error : %@", error);
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+	UIRemoteNotificationType notiType = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+	
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notiType];
     return YES;
 }
 							
